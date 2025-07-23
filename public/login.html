@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareConnect - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .login-container { max-width: 400px; margin: 60px auto; padding: 2rem; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+        .login-btn { width: 100%; margin: 1rem 0; padding: 1rem; font-size: 1.1rem; border: none; border-radius: 5px; cursor: pointer; transition: background 0.2s; }
+        .elder-btn { background: #e57373; color: #fff; }
+        .elder-btn:hover { background: #d32f2f; }
+        .volunteer-btn { background: #64b5f6; color: #fff; }
+        .volunteer-btn:hover { background: #1976d2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-heart"></i>
+                    <h1>CareConnect</h1>
+                </div>
+                <p class="tagline">Login to Continue</p>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="login-container">
+                <h2>Login as</h2>
+                <button class="login-btn elder-btn" onclick="login('elder')">
+                    <i class="fas fa-user"></i> Elder
+                </button>
+                <button class="login-btn volunteer-btn" onclick="window.location.href='/volunteer-login'">
+                    <i class="fas fa-hands-helping"></i> Volunteer
+                </button>
+                <div id="loginError" style="color:red; margin-top:1rem; display:none;"></div>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 CareConnect. Caring for our community elders.</p>
+            </div>
+        </footer>
+    </div>
+    <script>
+        function login(role) {
+            fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else if (data.error) {
+                    document.getElementById('loginError').innerText = data.error;
+                    document.getElementById('loginError').style.display = 'block';
+                }
+            })
+            .catch(() => {
+                document.getElementById('loginError').innerText = 'Login failed. Please try again.';
+                document.getElementById('loginError').style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html> 

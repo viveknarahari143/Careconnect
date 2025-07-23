@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Login - CareConnect</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .login-container { max-width: 400px; margin: 60px auto; padding: 2rem; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+        .login-btn { width: 100%; margin: 1rem 0; padding: 1rem; font-size: 1.1rem; border: none; border-radius: 5px; cursor: pointer; background: #64b5f6; color: #fff; transition: background 0.2s; }
+        .login-btn:hover { background: #1976d2; }
+        .register-link { display: block; margin-top: 1rem; color: #1976d2; text-decoration: underline; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-heart"></i>
+                    <h1>CareConnect</h1>
+                </div>
+                <p class="tagline">Volunteer Login</p>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="login-container">
+                <h2>Volunteer Login</h2>
+                <form id="volunteerLoginForm">
+                    <input type="email" id="email" name="email" placeholder="Email" required style="margin-bottom:1rem;width:100%;padding:0.75rem;">
+                    <input type="password" id="password" name="password" placeholder="Password" required style="margin-bottom:1rem;width:100%;padding:0.75rem;">
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+                <div id="loginError" style="color:red; margin-top:1rem; display:none;"></div>
+                <a href="/volunteer-register" class="register-link">Don't have an account? Register here</a>
+            </div>
+        </main>
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 CareConnect. Caring for our community elders.</p>
+            </div>
+        </footer>
+    </div>
+    <script>
+        document.getElementById('volunteerLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            fetch('/volunteer-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else if (data.error) {
+                    document.getElementById('loginError').innerText = data.error;
+                    document.getElementById('loginError').style.display = 'block';
+                }
+            })
+            .catch(() => {
+                document.getElementById('loginError').innerText = 'Login failed. Please try again.';
+                document.getElementById('loginError').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 
