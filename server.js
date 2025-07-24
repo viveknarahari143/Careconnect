@@ -24,14 +24,12 @@ app.use(session({
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/careconnect';
 
-mongoose.connect(MONGODB_URI)
-.then(() => {
-  console.log('Connected to MongoDB successfully');
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
-.catch((error) => {
-  console.error('MongoDB connection error:', error);
-  process.exit(1);
-});
+.then(() => console.log('✅ MongoDB Connected Successfully'))
+.catch(err => console.error('❌ MongoDB Error:', err));
 
 // Routes
 const requestRoutes = require('./routes/requests');
