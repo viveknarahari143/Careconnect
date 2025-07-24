@@ -117,15 +117,24 @@ function requireLogin(role) {
 }
 
 // Protect routes
-app.get('/', requireLogin('elder'), (req, res) => {
-  const role = req.session.role;
-  const indexHtmlPath = path.join(__dirname, 'public', 'index.html');
-  fs.readFile(indexHtmlPath, 'utf8', (err, data) => {
-    if (err) return res.status(500).send('Error loading help request form');
-    // Inject a script to set window.userRole
-    const injected = data.replace('</head>', `<script>window.userRole = '${role || ''}';</script></head>`);
-    res.send(injected);
-  });
+app.get('/', (req, res) => {
+  if (!req.session.role) {
+    return res.redirect('/login');
+  }
+  if (req.session.role === 'elder') {
+    // Serve the help request form
+    const role = req.session.role;
+    const indexHtmlPath = path.join(__dirname, 'public', 'index.html');
+    fs.readFile(indexHtmlPath, 'utf8', (err, data) => {
+      if (err) return res.status(500).send('Error loading help request form');
+      const injected = data.replace('</head>', `<script>window.userRole = '${role || ''}';</script></head>`);
+      res.send(injected);
+    });
+  } else if (req.session.role === 'volunteer') {
+    return res.redirect('/admin');
+  } else {
+    return res.redirect('/login');
+  }
 });
 
 // Allow both elders and volunteers to access /admin, but pass role info
