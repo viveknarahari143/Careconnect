@@ -14,21 +14,30 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'careconnect_secret',
   resave: false,
   saveUninitialized: true
 }));
 
+// Redirect root to login page
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/careconnect';
 
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('✅ MongoDB Connected Successfully'))
+.then(() => {
+  console.log('✅ Connected to MongoDB');
+})
 .catch(err => console.error('❌ MongoDB Error:', err));
 
 // Routes
@@ -115,27 +124,6 @@ function requireLogin(role) {
     res.redirect('/login');
   };
 }
-
-// Protect routes
-app.get('/', (req, res) => {
-  if (!req.session.role) {
-    return res.redirect('/login');
-  }
-  if (req.session.role === 'elder') {
-    // Serve the help request form
-    const role = req.session.role;
-    const indexHtmlPath = path.join(__dirname, 'public', 'index.html');
-    fs.readFile(indexHtmlPath, 'utf8', (err, data) => {
-      if (err) return res.status(500).send('Error loading help request form');
-      const injected = data.replace('</head>', `<script>window.userRole = '${role || ''}';</script></head>`);
-      res.send(injected);
-    });
-  } else if (req.session.role === 'volunteer') {
-    return res.redirect('/admin');
-  } else {
-    return res.redirect('/login');
-  }
-});
 
 // Allow both elders and volunteers to access /admin, but pass role info
 app.get('/admin', (req, res) => {

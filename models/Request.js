@@ -1,3 +1,4 @@
+console.log('Received a help request submission');
 const mongoose = require('mongoose');
 
 const requestSchema = new mongoose.Schema({

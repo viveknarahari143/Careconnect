@@ -29,10 +29,10 @@
         <main class="main-content">
             <div class="login-container">
                 <h2>Login as</h2>
-                <button class="login-btn elder-btn" onclick="login('elder')">
+                <button class="login-btn elder-btn" onclick="window.location.href='index.html'">
                     <i class="fas fa-user"></i> Elder
                 </button>
-                <button class="login-btn volunteer-btn" onclick="window.location.href='/volunteer-login'">
+                <button class="login-btn volunteer-btn" onclick="window.location.href='volunteer-login.html'">
                     <i class="fas fa-hands-helping"></i> Volunteer
                 </button>
                 <div id="loginError" style="color:red; margin-top:1rem; display:none;"></div>
@@ -45,26 +45,7 @@
         </footer>
     </div>
     <script>
-        function login(role) {
-            fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ role })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                } else if (data.error) {
-                    document.getElementById('loginError').innerText = data.error;
-                    document.getElementById('loginError').style.display = 'block';
-                }
-            })
-            .catch(() => {
-                document.getElementById('loginError').innerText = 'Login failed. Please try again.';
-                document.getElementById('loginError').style.display = 'block';
-            });
-        }
+        // No login logic needed for elders, navigation only
     </script>
 </body>
 </html> 

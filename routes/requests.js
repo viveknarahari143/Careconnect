@@ -29,10 +29,11 @@ router.post('/', async (req, res) => {
 
     // Nodemailer: Notify all volunteers
     try {
-      console.log('GMAIL_USER:', process.env.GMAIL_USER);
-      console.log('GMAIL_PASS:', process.env.GMAIL_PASS ? '***' : 'MISSING');
       const volunteers = await Volunteer.find({}, 'email name');
       console.log('Sending emails to volunteers:', volunteers.map(v => v.email));
+      // Debug: log Gmail credentials
+      console.log('GMAIL_USER:', process.env.GMAIL_USER);
+      console.log('GMAIL_PASS:', process.env.GMAIL_PASS ? '***' : 'MISSING');
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {

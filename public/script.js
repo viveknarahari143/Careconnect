@@ -88,7 +88,7 @@ function initHelpRequestForm() {
             showMessage('Your help request has been submitted successfully! We will contact you soon.', 'success');
             form.reset();
             // Redirect to admin dashboard (read-only for elders)
-            window.location.href = '/admin';
+            window.location.href = 'admin.html?role=elder';
             
         } catch (error) {
             console.error('Error submitting request:', error);
@@ -268,6 +268,10 @@ function renderRequestsTable() {
             </td>
         </tr>
     `).join('');
+    // If in elder mode, disable all except view
+    if (window.userRole === 'elder') {
+        disableAdminActions();
+    }
 }
 
 function escapeHtml(text) {
@@ -420,6 +424,10 @@ function disableAdminActions() {
             btn.disabled = true;
             btn.style.opacity = 0.5;
             btn.style.pointerEvents = 'none';
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = 1;
+            btn.style.pointerEvents = 'auto';
         }
     });
 }

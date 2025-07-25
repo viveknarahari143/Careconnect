@@ -146,6 +146,21 @@
 
     <script src="script.js"></script>
     <script>
+        // Set userRole based on query parameter or sessionStorage
+        (function() {
+            // Check for ?role=elder or ?role=volunteer in URL
+            const params = new URLSearchParams(window.location.search);
+            let role = params.get('role');
+            if (!role) {
+                // Fallback: check sessionStorage
+                role = sessionStorage.getItem('userRole');
+            } else {
+                sessionStorage.setItem('userRole', role);
+            }
+            if (role) {
+                window.userRole = role;
+            }
+        })();
         // Initialize admin dashboard when page loads
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof initAdminDashboard === 'function') {
